@@ -101,7 +101,10 @@ namespace Auth
                 .AddInMemoryClients(Config.GetClients(oidcApiUris, mvcApiUris))
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<CustomProfileService>();
-
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+            });
             if (Environment.IsDevelopment())
             {
                 builder.AddDeveloperSigningCredential();
@@ -133,8 +136,8 @@ namespace Auth
             app.UseRouting();
 
             app.UseStaticFiles();
-            app.UseCors(env.EnvironmentName);
-
+          //  app.UseCors(env.EnvironmentName);
+            app.UseCors(options => options.AllowAnyOrigin());
             app.UseAuthentication();
             app.UseIdentityServer();    // Adds the cookie authentication. The cookie will be used by IdentityServer to issue a token. 
             app.UseAuthorization();
